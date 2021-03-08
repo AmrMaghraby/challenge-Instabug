@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-12 col-md-3">
+    <%= render partial: 'rooms' %>
+  </div>
+    
+  <div class="col">
+    <div class="alert alert-primary">
+      <h4 class="alert-heading">
+        Do you have application token ?!
+      </h4>
+
+      <p>
+        We need to talk.
+      </p>
+
+      <hr />
+      <p>
+        
+        You can create or join a application from the sidebar.
+      </p>
+    </div>
+  </div>
+</div>
+  <% if @apps.present?  %>
+       <h1> Your last application token keep it with you to search for application <hr /> Token :  <%= @apps.last.access_token %> <%= %> </ h1>
+  <% end %>   
+    
+  <% if @current_application.present?  %>
+      <%= link_to @current_application.last.name, app_path(@current_application.last), class: 'nav-link room-nav-link' %>
+ <% end %>       

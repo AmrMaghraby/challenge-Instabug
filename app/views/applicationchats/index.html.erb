@@ -1,0 +1,12 @@
+<h1>New Application</h1>
+<%= form_with scope: :application_chat, url: applicationchat_path(1) ,local: true do |form| %>
+  <p>
+    <%= form.label :new_application %><br>
+    <%= form.text_field :new_application %>
+  </p>
+ 
+  <p>
+    <%= form.submit :create %>
+  </p>
+<% end %>
+  

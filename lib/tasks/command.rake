@@ -1,0 +1,2 @@
+namespace :command do
+end

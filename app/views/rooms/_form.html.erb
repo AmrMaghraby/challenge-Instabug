@@ -1,0 +1,7 @@
+<%= simple_form_for @room do |form| %>
+  <%= form.input :name %>
+  <%= form.input :app_token %>
+  <%= hidden_field_tag(:app_id , params[:app].values_at("id")[0] )  if params[:app]%>
+  <%= form.submit "Save", class: 'btn btn-success' %>
+<% end %>
+  
