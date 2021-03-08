@@ -111,7 +111,7 @@ Here is how it looks like:
 
 ![Bash completion demo](https://iridakos.com/assets/images/posts/rails-chat-tutorial/rails-chat-tutorial.gif)
 
-## Things left to work on:
+## Things left working on them:
 1. Rspecs on (Sidekiq, Elastic Search, MessageCreation, RoomCreation, ApplicationCreation)
 2. Ngnix load balancer
 3. Finishing caching on data
