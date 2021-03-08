@@ -1,11 +1,8 @@
 # Rails chat application
 
-![Bash completion demo](https://iridakos.com/assets/images/posts/rails-chat-tutorial/rails-chat-tutorial.gif)
-
-
-# README
 
 This is a Ruby on Rails app running on Docker using Elastic Search and Go Lang, for a challenge by Instabug.
+The app could work on both APi and GUI each has steps to follow and build (not working at the same time)
 
 ## Environment
 
@@ -42,12 +39,22 @@ Namely they are **4 main docker containers**:
 
 *Note: If you are using a fresh docker installation, fetching the resources will download around half a gigabyte (mainly the ElasticSearch and the Rails libraries)*
 
-Then to run the application
+Then to run application (API calls)
 
 ```
 $ sudo docker-compose --build
 $ sudo docker-compose up
+$ bundle exec whenever -w  //this for cron job to start
+$ cd to db folder and type ./workers  // this to run go worker and start processing insert message into db from go instead of rails 
 ```
+
+## Program Flow
+
+client visit our site and obligated to sign in other wise nothing to do is authorized if dont have account he could create one by sign up. If you are using postman or any other tool for testing Api you must recognize jwt token generated after sigining in and attach it any other request while testing API in order to verfy you are authorized user.
+After sigining in you have to start by creating application a token will be returned it is an auto generated one from rails and return if application successfully created.
+Use App token to create Room by assiging both name and token in this Room you could chat with other people in it (I am streaming data with web sockets and messages written to database with GO and sidekiq).
+Also inside each room you could search on messages (I implemented elastic search for this).
+
 ## API Description
 
 If settings kept as default, rails server will run on http://localhost:3000 and hence append that with the paths in the table below.
@@ -70,22 +77,17 @@ If settings kept as default, rails server will run on http://localhost:3000 and 
 | Get details about a specific message                                     | GET       | /room_messages?id=:id                                                       | :id       | Delete a specific message                                                | DELETE    | /message/:id/delete                                                         | :id                                                                               | Status message about action completion/fail             |                                                                        | {:message, :id, :created_at, :updated_at}   |
 
 
+To run application (GUI)
+in session_store.rb 
+comment this line 
+    Rails.application.config.session_store :disabled I added this line to prevent postman from storing cookies.
+Also you need to comment in every controller 
+   "respond_to :json" added to respond on postman by json
+   "skip_forgery_protection" added to by passes authenication alert by rails during testing
+After that run the server and go to /users/sign_in
+
+Here is how it looks like: 
 
 
-## Sample Data
-
-You can run ```docker-compose run app``` with the task ```rails db:seed``` to input the following seed data into the DB. (Do that after you are completely done with starting the server)
-
-**Applications Seed Data Sample**
-
-![App Seed Data](./sample_data/app_seed.JPG)
-
-**Chats Seed Data Sample**
-
-![Chats Seed Data](./sample_data/chat_seed.JPG)
-
-**Messages Seed Data Sample**
-
-![Messages Seed Data](./sample_data/message_seed.JPG)
-
+![Bash completion demo](https://iridakos.com/assets/images/posts/rails-chat-tutorial/rails-chat-tutorial.gif)
 
