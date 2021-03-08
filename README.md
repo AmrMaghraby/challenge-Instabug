@@ -55,9 +55,28 @@ After sigining in you have to start by creating application a token will be retu
 Use App token to create Room by assiging both name and token in this Room you could chat with other people in it (I am streaming data with web sockets and messages written to database with GO and sidekiq).
 Also inside each room you could search on messages (I implemented elastic search for this).
 
+## Race Conditions
+While testing I noticed if we run multiple servers at same time we are in risk to face race condition in two variables massege_count and chat_count if two users at same time
+updating the value by increment it our application will increment only one not the two users it is handled by setting locks.
+
+## Challenging part Go and Elastic search
+Last days while developing I noticed that Elastice search when integrated by rails it waits rails till finish database transaction and send call back then elastic search start reindex and refreshing to take effect of new rows after making GO part bonus point I noticed that Go call back is local and dont reach rails which makes elastic search not feel new transactions. I followed a lot tutorial some of them reindexing from scrach but all of them have big issues like down time . Finally solved by creating reindex_callback function manully acutally it is very small function but it do what we want.
+
+## Cron job
+I recognized from the requirments that we dont want message_count or room_count to be lagged more than 1 hour I created cron job for this two runner tasks work in background and logs when ever they are invoked you could check it.
+
+## Queue System (Rails and Go togather)
+In order to provide concurrency and multi-threading on queue of tasks (in case our app became large scale) sidekiq is effiecnt in it. I integrated it with rails and take jobs (message creation) and insert it in queue after that worker wrote by GO connect to sidekiq to consume the task.
+
+## Rspec and unit tests
+Sadly, I did not have time enough to write all possible tests. But there is test read to run by you in spec directory called scheduler.rb it tests if cron job successs or not.
+This tests works on both enviroment GUI and API.
+Anther two tests for user registiration and user login found in /spec/features unfourtanley time didn't fit to work on it for API enviroment works only on GUI.
+
 ## API Description
 
 If settings kept as default, rails server will run on http://localhost:3000 and hence append that with the paths in the table below.
+Please take care when the paramters are placed in body or in params.
 
 | Action                                                                   | HTTP Verb | Path                                                                        | Parameters                                                                        | Response                                                |
 |--------------------------------------------------------------------------|-----------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------|
@@ -91,4 +110,9 @@ Here is how it looks like:
 
 
 ![Bash completion demo](https://iridakos.com/assets/images/posts/rails-chat-tutorial/rails-chat-tutorial.gif)
+
+## Things left to work on:
+1. Rspecs on (Sidekiq, Elastic Search, MessageCreation, RoomCreation, ApplicationCreation)
+2. Ngnix load balancer
+3. Finishing caching on data
 
