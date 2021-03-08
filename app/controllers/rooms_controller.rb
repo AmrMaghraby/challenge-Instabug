@@ -4,8 +4,12 @@ class RoomsController < ApplicationController
   
   # Get all rooms created
   def index
-    @rooms = Room.all
-    render json: @rooms
+    if :app_token == nil
+      render :json => "message: Applicaiton token missing"
+    else
+      @rooms = Room.where(:app_token => params[:app_token])
+      render json: @rooms
+    end
   end
 
   def new
@@ -59,6 +63,37 @@ class RoomsController < ApplicationController
         render :json => "Couldn't find Room with 'id'"+params[:id]
       end  
     end  
+  end
+
+  def get_chat_counts
+    
+    if params[:app_token] == nil || params[:chat_number] == nil
+      render :json => "message: missing paramters"
+    end
+
+    @room = Room.where(:id => params[:chat_number])
+    @rooms_created_under_app =  @room.where(:app_token => params[:app_token])
+
+    render :json => @rooms_created_under_app.count
+  end
+
+
+  def delete_room
+
+    if params[:app_token] == nil || params[:chat_number] == nil
+      render :json => "message: missing paramters"
+    end
+
+    @room = Room.where(:id => params[:chat_number])
+    @rooms_created_under_app =  @room.where(:app_token => params[:app_token])
+    
+    if @rooms_created_under_app
+      if @rooms_created_under_app.first.destroy
+        render :json => "Successful: Deleted " +  params[:app_token].to_s
+      else
+        render :json => "Unsuccessful: Could not perfrom operation"
+      end
+    end
   end
 
   def edit

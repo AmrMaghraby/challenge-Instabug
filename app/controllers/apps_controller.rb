@@ -74,7 +74,7 @@ class AppsController < ApplicationController
     if @current_application.destroy
       render :json => "Successful: Deleted " +  params[:app_token].to_s
     else
-      render json: "Unsuccessful: Valid token number but could not Delete"
+      render json: "Unsuccessful: Could not perfrom this operation"
     end
   end
 
