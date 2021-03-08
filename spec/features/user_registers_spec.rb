@@ -3,6 +3,32 @@ require 'spec_helper'
 require 'rest_client'
 require 'active_support/core_ext'
 
+describe "sign up / sign out / sign in edit / cancel account" do
+
+  before (:each) do
+     @user = {:name => "tester", :email =>"tester@test.biz"}
+  end
+
+  describe "POST 'sign up'" do
+
+    it "should sign up with json request" do
+      @obj  = {"name"=>"tester", "email"=>"tester@test.biz"}.to_json
+      RestClient.
+      response_json = RestClient.get("http://localhost:3000/users/sign_up",@obj)
+      #{:user => {:email => "tester@test.biz", :password => "FILTERED"}}
+      
+      puts response_json
+      #puts @user.as_json
+      #response = ActiveSupport::JSON.decode(response_json)
+      #response["response"].should == "ok"
+      #response["user"].should == @user.as_json
+      #@@token = response["token"]
+      #@@token.should_not == nil
+    end
+
+  end
+end
+
 feature "User registers" do
 
   scenario "with valid details" , js: true do
@@ -59,7 +85,7 @@ feature "User registers" do
   end
   
   def sign_up(email, username, password, password_confirm)
-    fill_in "email", with: email
+    fill_in :email, with: email
     fill_in "Username", with: username
     fill_in "user_password", with: password
     fill_in "Password confirmation", with: password_confirm

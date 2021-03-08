@@ -1,11 +1,8 @@
 class RoomsController < ApplicationController
-  # Loads:
-  # @rooms = all rooms
-  # @room = current room when applicable
   skip_forgery_protection
-  #respond_to :json
-  before_action :load_entities
-
+  respond_to :json
+  
+  # Get all rooms created
   def index
     @rooms = Room.all
     render json: @rooms
@@ -14,44 +11,47 @@ class RoomsController < ApplicationController
   def new
     @room = Room.new
   end
-
+  
+  # create new room under given application token
   def create
     
+    # initialize new room with name and application
+    #(token and id) which will be placed under it.
     @room = Room.new permitted_parameters
-
-    #if params[:app_id] == nil
-    #   render :new
-    #else
-       #@room.app_id = params[:app_id]
-
-      @app = App.find(@room.app_id)
-      @app.with_lock do 
-        if @app.count == nil
-          @app.count = 0
-        end
-        room_number = @app.count + 1
-        @app.update(count: room_number)
-      end
-       
-       if @app.access_token != @room.app_token
-          render :json => 'App token not correctly inserted'
-       elsif @app.access_token == @room.app_token && @room.save 
-          #flash[:success] = "Room #{@room.name} was created successfully"
-          #redirect_to rooms_path
-          render json: @room
-       elsif
-          render json: @room.errors
-       end
-    end
-  #end
-  def show
-    #@room_message = RoomMessage.new room: @room
-    #@room_messages = @room.room_messages.includes(:user)
     
-    if params[:search_message]    
-          @results = params[:search_message].nil? ? [] : RoomMessage.search(params[:search_message])
+    # find app which room will be placed under it
+    @app = App.find(@room.app_id)
+    
+    # handling race condition if more than server running at 
+    # same time this variable will be update one time instead of twice
+    # assume two users at same time incrementing it if it was 5 
+    # then it will be 6 not 7
+    @app.with_lock do # lock what will happen here so only one user will increment
+   
+      # in case app is null it will throw exception here I try to prevent it
+      if @app.count == nil
+        @app.count = 0
+      end
+      
+      room_number = @app.count + 1
+      @app.update(count: room_number)
+    
     end
+    
+    # if user entered wrong app token warn him
+    if @app.access_token != @room.app_token
+      render :json => 'App token not correctly inserted'
+    elsif @app.access_token == @room.app_token && @room.save # if room saved? display it
+      render json: @room
+    elsif
+      render json: @room.errors
+    end
+  end
+  
+  def show
+    # getting id to retrive corrosponding room
     if params[:id]
+  
       begin
         @current_room = Room.find(params[:id])
         render json: @current_room
@@ -65,20 +65,9 @@ class RoomsController < ApplicationController
   end
 
   def update
-    #if @room.update_attributes(permitted_parameters)
-    #  flash[:success] = "Room #{@room.name} was updated successfully"
-    #  redirect_to rooms_path
-    #else
-    #  render :new
-    #end
   end
 
   protected
-
-  def load_entities
-    #@rooms = Room.all
-    #@room = Room.find(params[:id]) if params[:id]
-  end
 
   def permitted_parameters
     params.require(:room).permit(:name ,:app_token, :app_id)

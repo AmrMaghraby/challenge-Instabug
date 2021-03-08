@@ -1,5 +1,5 @@
 class SessionsController < Devise::SessionsController
-  #respond_to :json
+  respond_to :json
   skip_forgery_protection
 private
   #def respond_with(resource, _opts = {})
