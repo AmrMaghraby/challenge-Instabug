@@ -67,6 +67,8 @@ If settings kept as default, rails server will run on http://localhost:3000 and 
 | Delete an application by its token                                       | DELETE    | /apps/:app_token/delete                                                     | :app_token                                                                        | Status message about action completion/fail             |
 | Create a new chat under an application                                   | POST      | /rooms/create                                                               | :app_id, :app_token, :name                                                        | {:id, :name, :created_at, :updated_at}                  |
 | Get list of all chats under an application                               | GET       | /rooms?app_token=:app_token                                                 | :app_token                                                                        | [{:chat_number, :created_at}]                           |
+| Get number of messages under an application                              | GET       | /rooms/:app_token/chats/:chat_number/messages/count                         | :app_token, :chat_number                                                          | {:messages_count}                                       |
+| Delete a specific chat                                                   | DELETE    | /applications/:app_token/chats/:chat_number/delete                          | :app_token, :chat_number                                                          | Status message about action completion/fail             |
 
 
                                                                         | -                                                       |
