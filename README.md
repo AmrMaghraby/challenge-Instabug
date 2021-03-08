@@ -55,6 +55,9 @@ If settings kept as default, rails server will run on http://localhost:3000 and 
 
 | Action                                                                   | HTTP Verb | Path                                                                        | Parameters                                                                        | Response                                                |
 |--------------------------------------------------------------------------|-----------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------|
+| Sign up for new user                                                     | POST     |  /users                                   |                                  | :email, :username ,:password
+
+
 | Get a token for a new application                                        | POST      | /applications/create/?name=:name                                            | :name                                                                             | {:token, :name,:created_at}                             |
 | Get number of chats under an application                                 | GET       | /applications/:app_token/chats/count                                        | :app_token                                                                        | {:chats_count}                                          |
 | Delete an application by its token                                       | DELETE    | /applications/:app_token/delete                                             | :app_token                                                                        | Status message about action completion/fail             |
