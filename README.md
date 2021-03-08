@@ -48,11 +48,6 @@ Then to run the application
 $ sudo docker-compose --build
 $ sudo docker-compose up
 ```
-
-## API Description
-
-If settings kept as default, rails server will run on http://localhost:3000 and hence append that with the paths in the table below.
-
 ## API Description
 
 If settings kept as default, rails server will run on http://localhost:3000 and hence append that with the paths in the table below.
@@ -70,7 +65,9 @@ If settings kept as default, rails server will run on http://localhost:3000 and 
 | Get number of messages under an application                              | GET       | /rooms/:app_token/chats/:chat_number/messages/count                         | :app_token, :chat_number                                                          | {:messages_count}                                       |
 | Delete a specific chat                                                   | DELETE    | /applications/:app_token/chats/:chat_number/delete                          | :app_token, :chat_number                                                          | Status message about action completion/fail             |
 | Create a new message (Don't forget to open go worker before sending)     | POST      | /room_messages/                                                             | :room_id, :message                                                                | Status if Go worker performing this operation or failed |
-| Search                                                                   | GET       | /room_search_messages?search_message=:query                                 | :search_message (from params in postman)                                                          | {"results":[{:message_number, :content}]}                 |
+| Search                                                                   | GET       | /room_search_messages?search_message=:query                                 | :search_message (from params in postman)                                          | {"results":(:message, :room_id, :user_id)}               |
+| Get all messages under a specific chat                                   | GET       | /messages/:app_token/chats/:chat_number/display                             | :app_token, :chat_number                                                          | {:message, :id, :created_at, :updated_at} |
+| Get details about a specific message                                     | GET       | /room_messages?id=:id                                                       | :id                                                                               | {:message, :id, :created_at, :updated_at}   |
 
 
 
