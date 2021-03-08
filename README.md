@@ -79,13 +79,13 @@ If settings kept as default, rails server will run on http://localhost:3000 and 
 
 To run application (GUI)
 
-1.in session_store.rb<br/>  
-2.comment this line   
-    Rails.application.config.session_store :disabled I added this line to prevent postman from storing cookies.
+1.in session_store.rb<br/>
+2.comment this line
+    Rails.application.config.session_store :disabled I added this line to prevent postman from storing cookies.<br/>
 3.Also you need to comment in every controller 
    "respond_to :json" added to respond on postman by json
-   "skip_forgery_protection" added to by passes authenication alert by rails during testing
-4.After that run the server and go to /users/sign_in
+   "skip_forgery_protection" added to by passes authenication alert by rails during testing<br/>
+4.After that run the server and go to /users/sign_in<br/>
 
 Here is how it looks like: 
 
